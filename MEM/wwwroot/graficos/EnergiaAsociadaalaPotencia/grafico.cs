@@ -17,6 +17,7 @@ public class Main
         var sql = Services.session.CreateSQLQuery("");
         if (contrato == "0")
         {
+
             sql = Services.session.CreateSQLQuery(string.Format(@"
             SELECT DISTINCT Nombre AS Id, Nombre AS Label
             FROM `{0}`.mod_oferente            
