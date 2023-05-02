@@ -1,0 +1,117 @@
+﻿
+/*
+ *  STYLE 1
+ */
+
+.style-scroll::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+.style-scroll::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+.style-scroll::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
+}
+
+.map-Label {
+    padding: 0px 4px 0px 4px;
+    background-color: rgba(255,255,0,0.6);
+    border: none;
+    font-family: Roboto;
+    font-size: 0.8em;
+    z-index: 99999;
+}
+
+.padding0 > .col-sm-1,
+.padding0 > .col-sm-2,
+.padding0 > .col-sm-3,
+.padding0 > .col-sm-4,
+.padding0 > .col-sm-5,
+.padding0 > .col-sm-6,
+.padding0 > .col-sm-7,
+.padding0 > .col-sm-8,
+.padding0 > .col-sm-9,
+.padding0 > .col-sm-10,
+.padding0 > .col-sm-11,
+.padding0 > .col-sm-12 {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.padding0 > .row {
+    margin :0px;
+}
+
+.dashed {
+    stroke-dasharray: 5, 3;
+}
+
+.modal-xlg {
+    width: 85%;
+}
+
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+}
+
+    .switch input {
+        display: none;
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 19px;
+        width: 19px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+input:checked + .slider {
+    background-color: #3c8dbc;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 25px;
+}
+
+    .slider.round:before {
+        border-radius: 50%;
+    }

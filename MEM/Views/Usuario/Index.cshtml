@@ -1,0 +1,209 @@
+﻿@{
+    ViewData["Title"] = "Administración de Usuarios";
+}
+
+@if (ViewData.Keys.Contains("done"))
+{
+    <script>
+        var done = '@ViewData["done"]';
+    </script>
+}
+<div class="content-wrapper" style="min-height: 850px;" ng-controller="appController">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        @Html.Partial("~/Views/Shared/_PartialButtons.cshtml")
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </section>
+
+    <!-- BUSCAR content -->
+    <section class="content" ng-show="modo == MODO_BUSCAR">
+        <!-- BUSCAR -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel box box-primary">
+                    <div class="box-header with-border">
+                        <button class="btn btn-default pull-left" style="margin: -7px;" ng-click="onClickShowSearch()"> <i class="fa fa-search"></i> Búsqueda Avanzada</button>
+                        <button class="btn btn-primary pull-right" style="margin: -7px;" ng-click="onBuscar()" ng-if="!ShowAdvanceSearch"> <i class="fa fa-refresh"></i></button>
+                    </div>
+                    <div ng-if="ShowAdvanceSearch">
+                        <form class="form-horizontal">
+                            <div class="box-body">
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label">Nombre</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" ng-model="filterObject.Nombre" class="form-control" placeholder="Nombre">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label">Apellido</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" ng-model="filterObject.Apellido" class="form-control" placeholder="Apellido">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label">Usuario</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" ng-model="filterObject.Usuario" class="form-control" placeholder="Usuario">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label">E-mail</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" ng-model="filterObject.Email" class="form-control" placeholder="E-mail">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label">Grupo</label>
+                                    <div class="col-sm-10">
+                                        <select ng-model="filterObject.GrupoEmpresario" ng-options="item.id as item.label for item in grupos" class="form-control"></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label">Estado</label>
+                                    <div class="col-sm-10">
+                                        <select ng-model="filterObject.Estado" class="form-control">
+                                            <option value="T">Todos</option>
+                                            <option value="A">Activo</option>
+                                            <option value="D">Desactivado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6"></div>
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label"></label>
+                                    <div class="col-sm-10">
+                                        <button class="btn btn-primary pull-right" style="margin: 0px;" ng-click="onBuscar()"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- GRILLA -->
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table ng-table="tableBuscar" show-filter="false" class="table table-condensed table-bordered table-striped">
+                            <tr ng-repeat="row in $data">
+                                <td data-title="'Nombre'" sortable="'nombre'">{{row.nombre}}</td>
+                                <td data-title="'Apellido'" sortable="'apellido'">{{row.apellido}}</td>
+                                <td data-title="'Usuario'" sortable="'usuario'">{{row.usuario}}</td>
+                                <td data-title="'Grupo'" sortable="'grupoEmpresario'">{{row.grupoLabel}}</td>
+                                <td data-title="'Estado'" sortable="'estado'">{{GetEstadoNombre(row.estado)}}</td>
+                                @Html.Partial("~/Views/Shared/_PartialTableButtons.cshtml")
+                            </tr>
+                            <tfoot ng-table-paging="tableBuscar"></tfoot>
+                        </table>
+                    </div>
+                    <!-- ./box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+    <!-- EDITAR content -->
+    <section class="content" ng-show="modo == MODO_EDITAR || modo == MODO_AGREGAR">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="box" ng-class="{'box-success':(modo == MODO_AGREGAR),'box-primary':(modo == MODO_EDITAR)}">
+                    <div class="box-header with-border">
+                        <h5 class="box-title" ng-show="modo == MODO_AGREGAR"> <i class="fa fa-plus-circle text-green"></i> Crear nuevo <span class="text-green">Usuario</span></h5>
+                        <h5 class="box-title" ng-show="modo == MODO_EDITAR"> <i class="fa fa-pencil text-blue"></i> Edición del usuario <span class="text-blue">{{selecteditem.nombre}} {{selecteditem.apellido}}</span></h5>
+                    </div>
+                    <form class="form-horizontal">
+                        <div class="box-body">
+                            <div class="form-group {{errorClass('Nombre')}}">
+                                <label class="col-sm-2 control-label">Nombre</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.nombre" class="form-control" placeholder="Nombre" ng-change="errorRemove('Nombre')">
+                                    <span ng-show="hasError('Nombre')" class="help-block">{{errorMessage('Nombre')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('Apellido')}}">
+                                <label class="col-sm-2 control-label">Apellido</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.apellido" class="form-control" placeholder="Apellido" ng-change="errorRemove('Apellido')">
+                                    <span ng-show="hasError('Apellido')" class="help-block">{{errorMessage('Apellido')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('Usuario')}}">
+                                <label class="col-sm-2 control-label">Usuario</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.usuario" class="form-control" placeholder="Usuario" ng-change="errorRemove('Usuario')">
+                                    <span ng-show="hasError('Usuario')" class="help-block">{{errorMessage('Usuario')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('Email')}}">
+                                <label class="col-sm-2 control-label">E-Mail</label>
+                                <div class="col-sm-4">
+                                    <input type="email" ng-model="selecteditem.email" class="form-control" placeholder="E-Mail" ng-change="errorRemove('Email')">
+                                    <span ng-show="hasError('Email')" class="help-block">{{errorMessage('Email')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('Clave')}} ">
+                                <label class="col-sm-2 control-label">Clave</label>
+                                <div class="col-sm-4">
+                                    <input type="password" ng-model="selecteditem.clave" class="form-control" placeholder="Clave" ng-change="errorRemove('Clave')"
+                                           ng-pattern="/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/">
+                                    <span ng-show="hasError('Clave')" class="help-block">{{errorMessage('Clave')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('ClaveChequed')}}">
+                                <label class="col-sm-2 control-label">Reescribir Clave</label>
+                                <div class="col-sm-4">
+                                    <input type="password" ng-model="selecteditem.claveChequed" class="form-control" placeholder="Clave" ng-change="errorRemove('ClaveChequed')">
+                                    <span ng-show="hasError('ClaveChequed')" class="help-block">Las claves deben ser iguales</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Perfil</label>
+                                <div class="col-sm-4">
+                                    <select ng-model="selecteditem.perfilId" class="form-control"
+                                            ng-options="rol.perfilId as rol.nombre for rol in roles"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" ng-readonly="verPerfil">Grupo Empresario</label>
+                                <div class="col-sm-4" ng-readonly="!verPerfil">
+                                    <select ng-model="selecteditem.grupoEmpresario" ng-options="item.id as item.label for item in gruposToAdd" class="form-control" ng-readonly="!verPerfil"></select>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" ng-show="modo == MODO_EDITAR">Estado</label>
+                                <div class="col-sm-4" ng-show="modo == MODO_EDITAR">
+                                    <select ng-model="selecteditem.estado" class="form-control">
+                                        <option value="A">Activo</option>
+                                        <option value="D">Desactivado</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            @Html.Partial("~/Views/Shared/_PartialModificadoPor.cshtml")
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="~/js/controller/usuario/usuarioController.js"></script>

@@ -1,0 +1,283 @@
+@{
+    ViewData["Title"] = "Escenarios";
+}
+
+<script>
+    var componentes = ['nvd3', 'ngMap', 'ngRoute'];
+</script>
+
+<div class="content-wrapper" style="min-height: 850px;" ng-controller="appController">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        @Html.Partial("~/Views/Shared/_PartialButtonsEscenario.cshtml")
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </section>
+
+    <!-- BUSCAR content -->
+    <section class="content" ng-show="modo == MODO_BUSCAR">
+        <!-- BUSCAR -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel box box-primary">
+                    <div class="box-header with-border">
+                        <button class="btn btn-default pull-left" style="margin: -7px;" ng-click="onClickShowSearch()"> <i class="fa fa-search"></i> B&uacute;squeda Avanzada</button>
+                        <button class="btn btn-primary pull-right" style="margin: -7px;" ng-click="onBuscar()" ng-if="!ShowAdvanceSearch"> <i class="fa fa-refresh"></i></button>
+                    </div>
+                    <div ng-if="ShowAdvanceSearch">
+                        <form class="form-horizontal">
+                            <div class="box-body">
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label">Nombre</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" ng-model="filterObject.Nombre" class="form-control" placeholder="Nombre">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-3 control-label">Base de Datos</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" ng-model="filterObject.BaseDatos" class="form-control" placeholder="Base de Datos">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label">Estado</label>
+                                    <div class="col-sm-10">
+                                        <select ng-model="filterObject.Estado" class="form-control">
+                                            <option value="T">Todos</option>
+                                            <option value="@MEMDataService.com.gq.constantes.Constantes.ESTADO_ESCENARIO_SIN_BASE">Sin Base</option>
+                                            <option value="@MEMDataService.com.gq.constantes.Constantes.ESTADO_ESCENARIO_EDICION">Edici&oacute;n </option>
+                                            <option value="@MEMDataService.com.gq.constantes.Constantes.ESTADO_ESCENARIO_GENERADO">Generado</option>
+                                            <option value="@MEMDataService.com.gq.constantes.Constantes.ESTADO_ESCENARIO_PROCESANDO">Procesando</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-3 control-label">Privacidad</label>
+                                    <div class="col-sm-9">
+                                        <select ng-model="filterObject.Publico" class="form-control">
+                                            <option value="">Todos</option>
+                                            <option value="Publico">P&uacute;blico</option>
+                                            <option value="Privado">Privado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label"></label>
+                                    <div class="col-sm-10">
+                                        <button class="btn btn-primary pull-right" style="margin: 0px;" ng-click="onBuscar()"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRILLA -->
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table ng-table="tableBuscar" show-filter="false" class="table table-condensed table-bordered table-striped">
+                            <tr ng-repeat="row in $data">
+                                <td data-title="'Nombre'" sortable="'nombre'">{{row.nombre}}</td>
+                                @*<td data-title="'Base de Datos'" sortable="'baseDatos'">{{row.baseDatos}}</td>*@
+                                <td data-title="'Fechas'">{{row.fechaInicio}} - {{row.semanaInicio}} a {{row.fechaFin}} - {{row.semanaFin}} </td>
+                                <td data-title="'Privacidad'" sortable="'publico'">{{row.publico}}</td>
+                                <td data-title="'Creado por'" sortable="'creadoPor'">{{row.creadoPorNombre}}</td>
+                                <td data-title="'Estado'" sortable="'estado'">{{GetEstadoEscenarioNombre(row.estado)}}</td>
+                                <td data-title="'Acciones'" style="text-align:center">
+                                    @if (MEM.com.gq.security.Security.hasPermission(((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)ViewContext.ActionDescriptor).ControllerTypeInfo, "Clonar", false))
+                                    {
+                                        <button class="btn btn-sm btn-warning" ng-if="row.estado=='@MEMDataService.com.gq.constantes.Constantes.ESTADO_ESCENARIO_GENERADO'"
+                                                ng-click="onClonar(row)" title="Clonar">
+                                            <i class="fa fa-clone"></i>
+                                        </button>
+                                    }
+
+
+                                    @if (MEM.com.gq.security.Security.hasPermission(((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)ViewContext.ActionDescriptor).ControllerTypeInfo, "GetLog", false))
+                                    {
+                                        <button class="btn btn-sm btn-primary"
+                                                ng-if="@MEM.com.gq.security.Security.IsAdminPerfil(MEM.com.gq.security.Security.usuarioLogueado.PerfilId).ToString().ToLower()
+                                                      || row.publico == 'Privado'" 
+                                                ng-click="onShowLog(row)" title="Log de eventos">
+                                            <i class="fa fa-list"></i>
+                                        </button>
+                                    }
+
+
+                                    @if (MEM.com.gq.security.Security.hasPermission(((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)ViewContext.ActionDescriptor).ControllerTypeInfo, "EjecutarModeloFull", false))
+                                    {
+                                        <button class="btn btn-success btn-sm" ng-show="(row.estado=='@MEMDataService.com.gq.constantes.Constantes.ESTADO_ESCENARIO_EDICION'
+                                                                                      || row.estado=='@MEMDataService.com.gq.constantes.Constantes.ESTADO_ESCENARIO_GENERADO' )"
+                                                 
+                                                ng-if="@MEM.com.gq.security.Security.IsAdminPerfil(MEM.com.gq.security.Security.usuarioLogueado.PerfilId).ToString().ToLower()
+                                                      || row.publico == 'Privado'" 
+                                                ng-click="onEjecutarModeloFull(row)" title="Ejecutar Modelo">
+                                            <i class="fa fa-play-circle"></i>
+                                        </button>
+                                    }
+
+                                    <button ng-if="row.estado=='@MEMDataService.com.gq.constantes.Constantes.ESTADO_ESCENARIO_GENERADO'"
+                                            class="btn bg-navy-active btn-sm" ng-click="onVer(row)"
+                                            title="Gr&aacute;ficos">
+                                        <i class="fa fa-bar-chart "></i>
+                                    </button>
+
+
+                                    @if (MEM.com.gq.security.Security.hasPermission(((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)ViewContext.ActionDescriptor).ControllerTypeInfo, "Editar", false))
+                                    {
+                                        <button class="btn btn-primary btn-sm" ng-click="onModificar(row)" title="Editar"
+                                                ng-if="@MEM.com.gq.security.Security.IsAdminPerfil(MEM.com.gq.security.Security.usuarioLogueado.PerfilId).ToString().ToLower()
+                                                       || row.publico == 'Privado'">
+                                                <i class="fa fa-pencil"></i> 
+                                        </button>
+                                    }
+
+                                    @if (MEM.com.gq.security.Security.hasPermission(((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)ViewContext.ActionDescriptor).ControllerTypeInfo, "Borrar", false))
+                                    {
+                                        <button class="btn btn-danger btn-sm" ng-click="onBorrar(row)" title="Borrar"
+                                                ng-if="@MEM.com.gq.security.Security.IsAdminPerfil(MEM.com.gq.security.Security.usuarioLogueado.PerfilId).ToString().ToLower()
+                                                      || row.publico == 'Privado'">  
+                                                      <i class="fa fa-trash-o"></i>
+                                        </button>
+                                    }
+
+                                </td>
+
+                            </tr>
+                            <tfoot ng-table-paging="tableBuscar"></tfoot>
+                        </table>
+                    </div>
+                    <!-- ./box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+    <!-- EDITAR content -->
+    <section class="content" style="padding-bottom: 0px;" ng-show="modo == MODO_EDITAR || modo == MODO_AGREGAR">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="box" ng-class="{'box-success':(modo == MODO_AGREGAR),'box-primary':(modo == MODO_EDITAR)}">
+                    <div class="box-header with-border">
+                        <h5 class="box-title" ng-show="modo == MODO_AGREGAR"> <i class="fa fa-plus-circle text-green"></i> Crear nuevo <span class="text-green">Escenario</span></h5>
+                        <h5 class="box-title" ng-show="modo == MODO_EDITAR"> <i class="fa fa-pencil text-blue"></i> Edici&oacute;n del escenario <span class="text-blue">{{selecteditem.nombre}}</span></h5>
+                    </div>
+                    <form class="form-horizontal">
+                        <div class="box-body">
+
+                            <div class="form-group col-sm-12{{errorClass('Nombre')}} {{errorClass('Plugin')}}">
+                                <label class="col-sm-2 control-label">Nombre</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.nombre" class="form-control" placeholder="Nombre" ng-change="errorRemove('Nombre')">
+                                    <span ng-show="hasError('Nombre')" class="help-block">{{errorMessage('Nombre')}}</span>
+                                </div>
+                                <label class="col-sm-2 control-label">Plugin</label>
+                                <div class="col-sm-4">
+                                    <select ng-model="selecteditem.pluginId" ng-options="item.id as item.label for item in plugins" class="form-control"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-12 {{errorClass('FechaInicio')}} ">
+                                <label class="col-sm-2 control-label">Inicio</label>
+
+                                <label class="col-sm-1 control-label" style="padding-left: 0px;padding-right: 5px;">A&ntilde;o</label>
+                                <div class="col-sm-1">
+                                    <input type="number" min="2000" max="2200" ng-model="selecteditem.fechaInicio" class="form-control" placeholder="A&ntilde;o" ng-change="errorRemove('FechaInicio')" ng-readonly="modo == MODO_EDITAR || isClonar"
+                                           style="padding-left: 5px;padding-right: 5px;">
+                                    <span ng-show="hasError('FechaInicio')" class="help-block">{{errorMessage('FechaInicio')}}</span>
+                                </div>
+                                <label class="col-sm-1 control-label" style="padding-left: 0px;padding-right: 5px;">Mes</label>
+                                <div class="col-sm-1">
+                                    <input type="number" min="1" max="12" ng-model="selecteditem.semanaInicio" class="form-control" placeholder="Mes" ng-change="errorRemove('SemanaInicio')" ng-readonly="modo == MODO_EDITAR || isClonar"
+                                           style="padding-left: 5px;padding-right: 5px;">
+                                    <span ng-show="hasError('SemanaInicio')" class="help-block">{{errorMessage('SemanaInicio')}}</span>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group col-sm-12 {{errorClass('FechaFin')}}">
+                                <label class="col-sm-2 control-label" style="padding-left: 0px;padding-right: 5px;">Fin</label>
+                                <label class="col-sm-1 control-label">A&ntilde;o </label>
+                                <div class="col-sm-1">
+                                    <input type="number" min="2000" max="2200" ng-model="selecteditem.fechaFin" class="form-control" placeholder="A&ntilde;o" ng-change="errorRemove('FechaFin')" ng-readonly="modo == MODO_EDITAR || isClonar"
+                                           style="padding-left: 5px;padding-right: 5px;">
+                                    <span ng-show="hasError('FechaFin')" class="help-block">{{errorMessage('FechaFin')}}</span>
+                                </div>
+                                <label class="col-sm-1 control-label" style="padding-left: 0px;padding-right: 5px;">Mes</label>
+                                <div class="col-sm-1">
+                                    <input type="number" min="1" max="12" ng-model="selecteditem.semanaFin" class="form-control" placeholder="Mes" ng-change="errorRemove('SemanaFin')" ng-readonly="modo == MODO_EDITAR || isClonar"
+                                           style="padding-left: 5px;padding-right: 5px;">
+                                    <span ng-show="hasError('SemanaFin')" class="help-block">{{errorMessage('SemanaFin')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-12" ng-show="modo == MODO_EDITAR">
+                                <label class="col-sm-2 control-label">Base de Datos</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.baseDatos" class="form-control" placeholder="Base de Datos" ng-change="errorRemove('BaseDatos')" ng-readonly="true">
+                                    <span ng-show="hasError('BaseDatos')" class="help-block">{{errorMessage('BaseDatos')}}</span>
+                                </div>
+
+                                <label class="col-sm-2 control-label">Escenario Base</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.escenarioBaseNombre" class="form-control" placeholder="Escenario Base" ng-change="errorRemove('EscenarioBaseNombre')" ng-readonly="true">
+                                    <span ng-show="hasError('EscenarioBaseNombre')" class="help-block">{{errorMessage('EscenarioBaseNombre')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <button style="margin-right: 50px;" ng-show="modo == MODO_AGREGAR" class="btn btn-danger pull-right" ng-click="onGenerarEscenario()"> Generar</button>
+                                </div>
+                            </div>
+                            @Html.Partial("~/Views/Shared/_PartialModificadoPor.cshtml")
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="content" style="padding-top: 0px;" ng-show="modo == MODO_EDITAR">
+        @Html.Partial("~/Views/Shared/_PartialEscenarioSupuesto.cshtml")
+    </section>
+    <section class="content" ng-show="modo == MODO_VER">
+        @Html.Partial("~/Views/Shared/_PartialEscenarioGrafico.cshtml")
+    </section>
+</div>
+
+<script type="text/ng-template" id="modalLog.html">
+    <div class="modal-header">
+        <h3 class="modal-title">
+            <i class="fa {{data.iconoTituloModal}}"></i>
+            <span class="modal-title" ng-bind-html="deliberatelyTrustDangerousSnippet(data.titulo)"></span>
+            <i class="fa fa-cog fa-spin" ng-if="log.data.escenario.estado == 'P'"></i>
+            <button class="btn btn-primary pull-right" type="button" ng-click="getLog()">Actualizar</button>
+        </h3>
+    </div>
+    <div class="modal-body" style="max-height:450px;overflow-y:auto">
+        <table ng-table="xx" show-filter="false" class="table table-condensed table-bordered table-striped">
+            <tr ng-repeat="row in log.data.log">
+                <td class="col-sm-2" data-title="'Fecha'">{{row.fecha | date :'yyyy-MM-dd HH:mm:ss'}}</td>
+                <td class="col-sm-2" data-title="'Tipo'">{{row.tipo}}</td>
+                <td data-title="'Informacion'">{{row.informacion}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary pull-right" type="button" ng-click="onOk()">Aceptar</button>
+    </div>
+</script>
+
+<script src="~/js/controller/escenario/escenarioController.js"></script>

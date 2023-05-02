@@ -1,0 +1,141 @@
+
+@if (ViewData.Keys.Contains("done"))
+{
+    <script>
+        var done = '@ViewData["done"]';
+    </script>
+}
+
+
+
+<div class="content-wrapper" style="min-height: 850px;" ng-controller="appController">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        @Html.Partial("~/Views/Shared/_PartialButtons.cshtml")
+        <h1>
+            Administraci&oacute;n de SMTP
+        </h1>
+    </section>
+
+    <!-- BUSCAR content -->
+    <section class="content" ng-show="modo == MODO_BUSCAR">
+
+        <!-- GRILLA -->
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table ng-table="tableBuscar" show-filter="false" class="table table-condensed table-bordered table-striped">
+                            <tr ng-repeat="row in $data">
+                                <td data-title="'Nombre del SMTP'" sortable="'nombre'">{{row.nombre}}</td>
+                                <td data-title="'Email de Origen'" sortable="'emailFrom'">{{row.eMailFrom}}</td>
+                                <td data-title="'Host'" sortable="'host'">{{row.host}}</td>
+                                <td data-title="'Port'" sortable="'port'">{{row.port}}</td>
+                                <td data-title="''" style="width:45px;">
+                                    <button class="btn btn-primary btn-sm" ng-show="showTableButtonEdit" ng-click="onModificar(row)" title="Editar"> <i class="fa fa-pencil"></i> </button>
+                                </td>
+                            </tr>
+                            <tfoot ng-table-paging="tableBuscar"></tfoot>
+                        </table>
+                    </div>
+                    <!-- ./box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+    <!-- EDITAR content -->
+    <section class="content" ng-show="modo == MODO_EDITAR || modo == MODO_AGREGAR">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="box" ng-class="{'box-success':(modo == MODO_AGREGAR),'box-primary':(modo == MODO_EDITAR)}">
+                    <div class="box-header with-border">
+                        <h5 class="box-title" ng-show="modo == MODO_EDITAR"> <i class="fa fa-pencil text-blue"></i> Nombre <span class="text-blue">{{selecteditem.nombre}}</span></h5>
+                    </div>
+                    <form class="form-horizontal">
+                        <div class="box-body">
+                            <div class="form-group {{errorClass('Nombre')}}">
+                                <label class="col-sm-2 control-label">Nombre del SMTP</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.nombre" class="form-control" placeholder="Nombre" ng-change="errorRemove('Nombre')">
+                                    <span ng-show="hasError('Nombre')" class="help-block">{{errorMessage('Nombre')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('Host')}}">
+                                <label class="col-sm-2 control-label">Host</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.host" class="form-control" placeholder="Host" ng-change="errorRemove('Host')">
+                                    <span ng-show="hasError('Host')" class="help-block">{{errorMessage('Host')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('Port')}}">
+                                <label class="col-sm-2 control-label">Port</label>
+                                <div class="col-sm-4">
+                                    <input type="number" min="0" ng-model="selecteditem.port" class="form-control" placeholder="Port" ng-change="errorRemove('Port')">
+                                    <span ng-show="hasError('Port')" class="help-block">{{errorMessage('Port')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('UseDefaultCredentials')}}">
+                                <label class="col-sm-2 control-label">Usar credenciales predeterminadas</label>
+                                <div class="col-sm-4" style="padding-top: 15px;">
+                                    <label class="switch">                                       
+                                        <input type="checkbox" ng-model="selecteditem.useDefaultCredentials" ng-checked="selecteditem.useDefaultCredentials">
+                                        <span class="slider round"></span>
+                                        <span ng-show="hasError('UseDefaultCredentials')" class="help-block">{{errorMessage('UseDefaultCredentials')}}</span>
+                                    </label>                                    
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('EnableSsl')}}">
+                                <label class="col-sm-2 control-label">Habilitar Ssl</label>
+                                <div class="col-sm-4" style="padding-top: 15px;">
+                                    <label class="switch">                                       
+                                        <input type="checkbox" ng-model="selecteditem.enableSsl" ng-checked="selecteditem.enableSsl">
+                                        <span class="slider round"></span>
+                                        <span ng-show="hasError('EnableSsl')" class="help-block">{{errorMessage('EnableSsl')}}</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('NombreFrom')}}">
+                                <label class="col-sm-2 control-label">Nombre Descriptivo</label>
+                                <div class="col-sm-4">                                    
+                                    <input type="text" ng-model="selecteditem.nombreFrom" class="form-control" placeholder="NombreFrom" ng-change="errorRemove('NombreFrom')">
+                                    <span ng-show="hasError('NombreFrom')" class="help-block">{{errorMessage('NombreFrom')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('EMailFrom')}}">
+                                <label class="col-sm-2 control-label">Email de Origen</label>
+                                <div class="col-sm-4">
+                                    <input type="email" ng-model="selecteditem.eMailFrom" class="form-control" placeholder="EMailFrom" ng-change="errorRemove('EMailFrom')">
+                                    <span ng-show="hasError('EMailFrom')" class="help-block">{{errorMessage('EMailFrom')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('Pass')}}">
+                                <label class="col-sm-2 control-label">Contrase&ntilde;a</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.pass" class="form-control" placeholder="Pass" ng-change="errorRemove('Pass')">
+                                    <span ng-show="hasError('Pass')" class="help-block">{{errorMessage('Pass')}}</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+
+<script src="~/js/controller/smtp/smtpController.js"></script>

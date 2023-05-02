@@ -1,0 +1,16 @@
+﻿{
+  "ConnectionDB": {
+    "Server": "localhost",
+    "UserId": "memuser",
+    "pwd": "memuser",
+    "ConnectionString": "server=localhost;User Id=memuser; pwd=memuser; database=mem_panama_dev;default command timeout=999;Connection Timeout=999;",
+    "ProviderName": "MySql.Data.MySqlClient"
+  },
+  "ExcludeLibs": [
+    "libuv.dll",
+    "aes75.dll",
+    "gurobi75.dll",
+    "gurobi75.net.dll",
+    "gurobijni75.dll"
+  ]
+}

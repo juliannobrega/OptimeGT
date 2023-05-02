@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Borrar Escenarios";
+}
+
+<div class="content-wrapper" style="min-height: 850px;" ng-controller="appController">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">        
+        <h1>
+            @ViewData["Title"]
+        </h1>
+       
+    </section>      
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">                
+                <div class="panel box box-primary">                    
+                    <div class="box-header with-border">
+                        <button class="btn btn-danger pull-left" ng-click="onBorrarTodos()"> <i class="fa fa-trash-o"></i> Borrar Escenarios</button>
+                        <div style="text-align:left;" ng-if="showBuscando">
+                            <i class="fa fa-refresh fa-spin fa-2x" style="margin-left: 10px;margin-top: 3px;"></i>
+                        </div>
+                    </div>
+                    <h5 style="margin-left: 5px;">
+                        Esta opci&oacute;n eliminar&aacute; todos los escenarios p&uacute;blicos y privados.
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </section>
+   
+</div>
+
+<script src="~/js/controller/escenario/escenarioController.js"></script>

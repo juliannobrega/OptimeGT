@@ -1,0 +1,15 @@
+﻿<div class="pull-right">
+    @if (MEM.com.gq.security.Security.hasPermission(((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)ViewContext.ActionDescriptor).ControllerTypeInfo, "Guardar", false))
+    {
+        <button class="btn btn-success" ng-show="showButtonAdd" ng-click="onAgregar()" title="Agregar"> <i class="fa fa-plus-circle"></i>  Agregar</button>
+        <button class="btn btn-primary" ng-show="showButtonSave" ng-click="onGuardar()" title="Guardar"> <i class="fa fa-floppy-o"></i>  Guardar</button>
+
+        <button class="btn btn-primary" ng-show="showButtonFiltro" ng-click="ChangeWidth()" title="Filtros"> <i class="fa fa-eye"></i> Filtros</button>
+        
+        <button class="btn btn-warning" ng-show="showButtonCancel" ng-click="onCancelar()" title="Cancelar"> <i class="fa fa-arrow-left"></i> Volver</button>
+    }
+    else
+    {
+        <button class="btn btn-warning" ng-show="showButtonCancel" ng-click="onCancelar()" title="Cancelar"> <i class="fa fa-arrow-left"></i> Volver</button>
+    }
+</div>

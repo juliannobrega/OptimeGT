@@ -1,0 +1,238 @@
+﻿@using GQService.com.gq.extensions;
+@using Microsoft.AspNetCore.Mvc.Localization
+@{
+    ViewData["Title"] = "Optime Guatemala - Login";
+    Layout = "";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="SHORTCUT ICON" type="image/x-icon" href="~/images/panamaIcon.png" />
+
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />
+        <link rel="stylesheet" href="~/lib/ionicons/css/ionicons.css" />
+        <link rel="stylesheet" href="~/lib/adminlte/plugins/iCheck/all.css">
+        <link rel="stylesheet" href="~/lib/adminlte/css/AdminLTE.css" />
+        <link rel="stylesheet" href="~/lib/adminlte/css/skins/_all-skins.css" />
+        <link rel="stylesheet" href="~/lib/ng-table/ng-table.css" />
+        <link rel="stylesheet" href="~/lib/ui-select/select.css" />
+        <link rel="stylesheet" href="~/lib/nvd3/nv.d3.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    </environment>
+
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />
+        <link rel="stylesheet" href="~/lib/ionicons/css/ionicons.css" />
+        <link rel="stylesheet" href="~/lib/adminlte/plugins/iCheck/all.css">
+        <link rel="stylesheet" href="~/lib/adminlte/css/AdminLTE.css" />
+        <link rel="stylesheet" href="~/lib/adminlte/css/skins/_all-skins.css" />
+        <link rel="stylesheet" href="~/lib/ng-table/ng-table.css" />
+        <link rel="stylesheet" href="~/lib/ui-select/select.css" />
+        <link rel="stylesheet" href="~/lib/nvd3/nv.d3.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    </environment>
+
+    <script type="text/javascript">
+        var componentes;
+        var config = {
+            baseURL: '@Url.AbsoluteContent("~/")'
+        };
+
+        function logOut() {
+            window.location.href = config.baseURL + "Login";
+        }
+
+        function irHome() {
+            window.location.href = config.baseURL + "Escenario";
+        }
+    </script>
+</head>
+<body class="hold-transition login-page hidden" ng-app="AngularJSApp"
+      style="background-image: url(@Url.AbsoluteContent("~/")/images/loginBackGround.jpg); background-repeat: no-repeat;background-size: cover;background-position: center top;background-attachment: fixed;">
+
+    <div style="width:100%; height: 100%">
+        <img src="@Url.AbsoluteContent("~/")/images/panamafooter0.png" style="height: 17%;position: absolute; right: 0;bottom: 0;" />
+    </div>
+    <div class="login-box" ng-controller="appController">
+
+        <!-- /.login-logo -->
+        <div class="login-box-body" style="opacity: 0.9;" ng-show="showLoginBox">
+            <div ng-show="showLogin">
+                <p class="login-box-msg" style="font-size: 20px;"> Iniciar Sesión</p>
+                <form>
+                    <div class="form-group has-feedback">
+                        <input type="text" ng-model="data.UsuarioNombre" class="form-control" placeholder="Usuario o E-mail" ng-enter="onLogin()">
+                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <input type="password" ng-model="data.UsuarioClave" class="form-control" placeholder="Clave" ng-enter="onLogin()">
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    </div>
+                    <div class="form-group" ng-show="data.ErrorShow">
+                        <div class="col-sm-12">
+                            <div class="callout callout-danger">
+                                <h4><i class="fa fa-ban"></i> Error</h4>
+                                <p>
+                                    {{ErrorMsj}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"> Recordarme
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-xs-2">
+                            <i ng-if="showBuscando" class="fa fa-refresh fa-spin fa-2x fa-fw margin-bottom" style="margin-left: 20px; margin-top: 3px;"></i>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-xs-4">
+                            <button type="button" class="btn btn-primary btn-block btn-flat" ng-click="onLogin()">Entrar</button>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <div>
+                        <a href="#" ng-click="onRecuperarClave()">Recuperar Clave</a>
+                    </div>
+                </form>
+            </div>
+
+            <div ng-show="!showLogin">
+                <p class="login-box-msg" style="font-size: 20px;"> Ingrese nueva Clave</p>
+                <form>
+                    <div class="form-group has-feedback">
+                        <input type="password" ng-model="data.ClaveNueva" class="form-control" placeholder="Nueva Clave" ng-enter="onLogin()">
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <input type="password" ng-model="data.ClaveNuevaChequed" class="form-control" placeholder="Reescribir Clave" ng-enter="onLogin()">
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    </div>
+                    <div class="form-group" ng-show="data.ErrorShow">
+                        <div class="col-sm-12">
+                            <div class="callout callout-danger">
+                                <h4><i class="fa fa-ban"></i> Error</h4>
+                                <p ng-show="!showErrorMsj">
+                                    {{ErrorMsj}}
+                                </p>
+                                <p ng-show="showErrorMsj">
+                                    Las clave debe tener:
+                                    <br />-8 caracteres m&Iacute;nimo
+                                    <br />-Contener Mayuscula
+                                    <br />-Contener Miniscula
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-8">
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-xs-4">
+                            <button type="button" class="btn btn-primary btn-block btn-flat" ng-click="onLogin()">Entrar</button>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <!-- /.login-box-body -->
+
+        <div style="opacity: 0.9;" ng-show="!showLoginBox">
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <div class="callout callout-danger">
+                        <h4><i class="fa fa-ban"></i> Error</h4>
+                        <p>
+                            Navegador no soportado. <br /> Utilice Google Chrome.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.login-box -->
+    <environment names="Development">
+        <script src="~/lib/jquery/jquery-3.2.1.js"></script>
+        <script src="~/lib/bootstrap/js/bootstrap.js"></script>
+        <script src="~/lib/adminlte/plugins/fastclick/fastclick.js"></script>
+        <script src="~/lib/adminlte/plugins/iCheck/icheck.min.js"></script>
+        <script src="~/lib/adminlte/plugins/slimScroll/jquery.slimscroll.js"></script>
+        <script src="~/lib/adminlte/js/app.js"></script>
+        <script src="~/lib/angular/angular.js"></script>
+        <script src="~/lib/angular/angular-sanitize.js"></script>
+        <script src="~/lib/angular/angular-animate.js"></script>
+        <script src="~/lib/angular/angular-route.js"></script>
+        <script src="~/lib/ui-select/select.js"></script>
+        <script src="~/lib/ui-bootstrap/ui-bootstrap-tpls-2.5.0.js"></script>
+        <script src="~/lib/ng-table/ng-table.js"></script>
+        <script src="~/lib/d3/d3.min.js"></script>
+        <script src="~/lib/nvd3/nv.d3.min.js"></script>
+        <script src="~/lib/nvd3/angular-nvd3.min.js"></script>
+        <script src="~/lib/moment/moment.min.js"></script>
+        <script src="~/lib/ace/ace.js"></script>
+        <script src="~/lib/ace/ui-ace.js"></script>
+        <script src="~/js/controller/controller.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/controller/login/loginController.js"></script>
+        <script src="~/lib/ng-map/ng-map.min.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/lib/jquery/jquery-3.2.1.js"></script>
+        <script src="~/lib/bootstrap/js/bootstrap.js"></script>
+        <script src="~/lib/adminlte/plugins/fastclick/fastclick.js"></script>
+        <script src="~/lib/adminlte/plugins/iCheck/icheck.min.js"></script>
+        <script src="~/lib/adminlte/plugins/slimScroll/jquery.slimscroll.js"></script>
+        <script src="~/lib/adminlte/js/app.js"></script>
+        <script src="~/lib/angular/angular.js"></script>
+        <script src="~/lib/angular/angular-sanitize.js"></script>
+        <script src="~/lib/angular/angular-animate.js"></script>
+        <script src="~/lib/angular/angular-route.js"></script>
+        <script src="~/lib/ui-select/select.js"></script>
+        <script src="~/lib/ui-bootstrap/ui-bootstrap-tpls-2.5.0.js"></script>
+        <script src="~/lib/ng-table/ng-table.js"></script>
+        <script src="~/lib/d3/d3.min.js"></script>
+        <script src="~/lib/nvd3/nv.d3.min.js"></script>
+        <script src="~/lib/nvd3/angular-nvd3.min.js"></script>
+        <script src="~/lib/moment/moment.min.js"></script>
+        <script src="~/lib/ace/ace.js"></script>
+        <script src="~/lib/ace/ui-ace.js"></script>
+        <script src="~/js/controller/controller.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/controller/login/loginController.js"></script>
+        <script src="~/lib/ng-map/ng-map.min.js"></script>
+    </environment>
+    @Html.Partial("~/Views/Shared/_PartialModalDialog.cshtml")
+
+    <script type="text/ng-template" id="modalRecuperarClave.html">
+        <div class="modal-header">
+            <h3 class="modal-title">
+                <p class="login-box-msg"> Recupera tu clave </p>
+            </h3>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group has-feedback">
+                    <input type="text" ng-model="data.extraData.UsuarioEmail" class="form-control" placeholder="Usuario o E-mail" ng-enter="onRecuperarClave()">
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-block btn-flat" ng-click="onOk()">Enviar</button>
+        </div>
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,21 @@
+﻿{
+  "ConnectionDB": {
+    "Server": "Localhost",
+    "UserId": "root",
+    "pwd": "root",
+    //"ConnectionString": "server=Localhost;User Id=root; pwd=root; database=optimeguatemala_database;default command timeout=999;Connection Timeout=999;",
+	"ConnectionString": "server= merc-electrico2.northcentralus.cloudapp.azure.com ;User Id=servermercelectrico2; pwd=Eque?751; database=optimeguatemala_database;default command timeout=999;Connection Timeout=999;",
+	
+    "ProviderName": "MySql.Data.MySqlClient"
+  },
+  "ExcludeLibs": [
+    "libuv.dll",
+    "aes75.dll",
+    "gurobi80.dll",
+    "gurobi80.net.dll",
+    "gurobijni80.dll",
+    "gurobi80_light.dll"
+  ]
+}
+
+

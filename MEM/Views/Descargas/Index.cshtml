@@ -1,0 +1,97 @@
+@{
+    ViewData["Title"] = "Descargas";
+}
+
+@if (ViewData.Keys.Contains("done"))
+{
+    <script>
+        var done = '@ViewData["done"]';
+    </script>
+}
+
+<div class="content-wrapper" style="min-height: 850px;" ng-controller="appController">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        @Html.Partial("~/Views/Shared/_PartialButtons.cshtml")
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </section>
+
+    <!-- BUSCAR content -->
+    <section class="content" ng-show="modo == MODO_BUSCAR">
+        <!-- GRILLA -->
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table ng-table="tableBuscar" show-filter="false" class="table table-condensed table-bordered table-striped">
+                            <tr ng-repeat="row in $data">
+                                <td data-title="'Nombre'" sortable="'nombre'">{{row.nombre}}</td>
+
+                                <td data-title="'Acciones'" style="text-align:right">
+                                    <button class="btn btn-success btn-sm" ng-click="onDescargar(row)" title="Descargar"> <i class="fa fa-download"></i> </button>
+                                    
+                                    @if (MEM.com.gq.security.Security.hasPermission(((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)ViewContext.ActionDescriptor).ControllerTypeInfo, "Guardar", false))
+                                    {
+                                        <button class="btn btn-primary btn-sm" ng-click="onModificar(row)" title="Editar"> <i class="fa fa-pencil"></i> </button>
+                                    }
+
+                                    @if (MEM.com.gq.security.Security.hasPermission(((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)ViewContext.ActionDescriptor).ControllerTypeInfo, "Borrar", false))
+                                    {
+                                        <button class="btn btn-danger btn-sm" ng-click="onBorrar(row)" title="Borrar"> <i class="fa fa-trash-o"></i> </button>
+                                    }
+
+                                </td>
+                            </tr>
+                            <tfoot ng-table-paging="tableBuscar"></tfoot>
+                        </table>
+                    </div>
+                    <!-- ./box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+    <!-- EDITAR content -->
+    <section class="content" ng-show="modo == MODO_EDITAR || modo == MODO_AGREGAR">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="box" ng-class="{'box-success':(modo == MODO_AGREGAR),'box-primary':(modo == MODO_EDITAR)}">
+                    <div class="box-header with-border">
+                        <h5 class="box-title" ng-show="modo == MODO_AGREGAR"> <i class="fa fa-plus-circle text-green"></i> Crear nuevo <span class="text-green">Archivo</span></h5>
+                        <h5 class="box-title" ng-show="modo == MODO_EDITAR"> <i class="fa fa-pencil text-blue"></i> Edici&oacute;n del archivo  <span class="text-blue">{{selecteditem.nombre}}</span></h5>
+                    </div>
+                    <form class="form-horizontal">
+                        <div class="box-body">
+                            <div class="form-group {{errorClass('Nombre')}}">
+                                <label class="col-sm-2 control-label">Nombre</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.nombre" class="form-control" placeholder="Nombre" ng-change="errorRemove('Nombre')">
+                                    <span ng-show="hasError('Nombre')" class="help-block">{{errorMessage('Nombre')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Archivo</label>
+                                <div class="col-sm-4">
+                                    <button class="btn btn-default" ng-click="onChangeFile()">Archivo</button> {{fileName}}
+                                    <input type="file" style="display:none" id="file" name='file' onchange="angular.element(this).scope().fileNameChanged(this)" />
+                                </div>
+                            </div>
+
+                            @Html.Partial("~/Views/Shared/_PartialModificadoPor.cshtml")
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/js/controller/descargas/descargasController.js"></script>

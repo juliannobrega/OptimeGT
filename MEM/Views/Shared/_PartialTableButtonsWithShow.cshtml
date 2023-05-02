@@ -1,0 +1,15 @@
+﻿<td data-title="''" style="width:150px;text-align:center;">
+    @if (MEM.com.gq.security.Security.hasPermission(((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)ViewContext.ActionDescriptor).ControllerTypeInfo, "Guardar", false))
+    {
+        <button class="btn btn-primary btn-sm" ng-show="showTableButtonVer" ng-click="onVer(row)" title="Ver"> <i class="fa fa-eye"></i> </button>
+        <button class="btn btn-primary btn-sm" ng-show="showTableButtonEdit" ng-click="onModificar(row)" title="Editar"> <i class="fa fa-pencil"></i> </button>
+    }
+    else
+    {
+        <button class="btn btn-primary btn-sm" ng-show="showTableButtonVer" ng-click="onVer(row)" title="Ver"> <i class="fa fa-eye"></i> </button>
+    }
+    @if (MEM.com.gq.security.Security.hasPermission(((Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor)ViewContext.ActionDescriptor).ControllerTypeInfo, "Borrar", false))
+    {
+        <button class="btn btn-danger btn-sm" ng-show="showTableButtonDelete" ng-click="onBorrar(row)" title="Borrar"> <i class="fa fa-trash-o"></i> </button>
+    }
+</td>

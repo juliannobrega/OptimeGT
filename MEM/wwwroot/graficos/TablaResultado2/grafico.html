@@ -1,0 +1,56 @@
+<div class="row padding0 clearfix">
+    <div class="form-group col-sm-6" style="padding-top: 5px;">
+    </div>
+
+    <div class="form-group col-sm-6">
+          
+        <button class="btn btn-success btn-sm pull-right col-sm-4" style="margin-top: 5px;margin-bottom: 5px;"
+                ng-click="ObtenerExcel()">
+            Resumen
+        </button>
+        
+        <div class="pull-right col-sm-1"></div>
+       <button class="btn btn-primary btn-sm pull-right col-sm-4" style="margin-top: 5px;margin-bottom: 5px;"
+                ng-click="ObtenerGraficos()">
+            Actualizar
+        </button>
+        <button class="btn btn-success btn-sm pull-right col-sm-4" style="margin-top: 5px;margin-bottom: 5px;"
+                ng-click="ObtenerBDLic()">
+            BD-Licitacion
+        </button>
+    </div>
+
+    <style>
+        .ng-table th {
+            background-color: lightgray !important;
+        }
+    </style>
+
+
+    <div class="col-md-12" style="overflow-x: auto;">
+        <table ng-table="tableBuscar" show-filter="false" class="table table-condensed table-bordered table-striped">
+            <tr ng-repeat="row in data" style="{{row.iD_Oferente == 'Total Neto OV' ? 'background-color:dimgrey; color: #ffffff;' : row.iD_Oferente == 'OV' ? 'background-color:dimgrey; color: #ffffff;' : ''}}">
+                <td data-title="'Oferente'" style="text-align: right;">{{row.iD_Oferente}}</td>
+                <td data-title="'Nombre'">{{row.nombre}}</td>
+                <td data-title="'Contrato'">{{row.contrato}}</td>
+                <td data-title="'Comb1'">{{row.iD_Comb1}}</td>
+                <td data-title="'Comb2'">{{row.iD_Comb2}}</td>
+                <td data-title="'Flexibilidad'">{{row.flexibilidad}}</td>
+                <td data-title="'Precio Potencia (USD/kW-Mes)'" style="text-align: right;">{{row.precio_Potencia}}</td>
+                <td data-title="'Precio Energía (USD/MWh)'" style="text-align: right;">{{row.precio_Energia}}</td>
+                <td data-title="'Energía Asignada (MWh)'" style="text-align: right;">{{row.energia_Asignada}}</td>
+                <td data-title="'Potencia Media Ofertada (kW)'" style="text-align: right;">{{row.potencia_Media_Ofertada}}</td>
+                <td data-title="'Potencia Media Adjudicada (kW)'" style="text-align: right;">{{row.potencia_Media_Adjudicada}}</td>
+                <td data-title="'Períodos de Potencia Adjudicada'" style="text-align: right;">{{row.periodos_de_Potencia_Adjudicada}}</td>
+                <td data-title="'Períodos de Energía Asignada'" style="text-align: right;">{{row.periodos_de_Energia_Asignada}}</td>
+                <td data-title="'Costo Total Potencia (USD)'" style="text-align: right;">{{row.costo_Total_Potencia}}</td>
+                <td data-title="'Costo Total Energía (USD)'" style="text-align: right;">{{row.costo_Total_Energia}}</td>
+                <td data-title="'Costo Total (USD)'" style="text-align: right;">{{row.costo_Total}}</td>
+            </tr>
+            <tfoot ng-table-paging="tableBuscar"></tfoot>
+        </table>
+    </div>
+    <div class="padding0 form-group col-sm-12" ng-if="showBuscando" style="text-align:center;">
+        <i class="fa fa-refresh fa-spin fa-3x fa-fw margin-bottom"></i>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+<div class="row padding0 clearfix">
+    <div class="form-group col-sm-10" style="padding-top: 5px;">
+
+        <div class="form-group col-sm-6">
+            <label class="col-sm-2 control-label" style="padding-top: 5px;padding-left: 0px;padding-right: 0px;">Desde</label>
+            <div class="col-sm-10">
+                <select ng-model="selectedFechaMin" ng-options=" item as item.label for item in fechaMin  track by item.id" class="form-control"></select>
+            </div>
+        </div>
+
+        <div class="form-group col-sm-6">
+            <label class="col-sm-2 control-label" style="padding-top: 5px;padding-left: 0px;padding-right: 0px;">Hasta</label>
+            <div class="col-sm-10">
+                <select ng-model="selectedFechaMax" ng-options=" item as item.label for item in fechaMax  track by item.id" class="form-control"></select>
+            </div>
+        </div>
+
+        <div class="form-group col-sm-6">
+            <label class="col-sm-2 control-label" style="padding-top: 5px;padding-left: 0px;padding-right: 0px;">Contrato</label>
+            <div class="col-sm-10">
+                <select ng-model="selectedContrato" ng-options=" item as item.label for item in contratos track by item.id" class="form-control"></select>
+            </div>
+        </div>
+
+        <div class="form-group col-sm-6">
+            <label class="col-sm-2 control-label" style="padding-top: 5px;padding-left: 0px;padding-right: 0px;">Nombre</label>
+            <div class="col-sm-10">
+                <select ng-model="selectedNombre" ng-options=" item as item.label for item in nombres track by item.id" class="form-control"></select>
+            </div>
+        </div>
+
+    </div>
+    <div class="form-group col-sm-2">
+        <button class="btn btn-primary btn-sm pull-right col-sm-12" style="margin-top: 5px;margin-bottom: 5px;"
+                ng-click="ObtenerGraficos()">
+            Actualizar
+        </button>
+        <button class="btn btn-success btn-sm pull-right col-sm-12" style="margin-top: 5px;margin-bottom: 5px;"
+                ng-click="ObtenerExcel()">
+            Excel
+        </button>
+    </div>
+    <div class="padding0 form-group col-sm-12" ng-if="showGrafico">
+        <nvd3 options="options" data="ChartCollection.charts"></nvd3>
+    </div>
+    <div class="padding0 form-group col-sm-12" ng-if="showBuscando" style="text-align:center;">
+        <i class="fa fa-refresh fa-spin fa-3x fa-fw margin-bottom"></i>
+    </div>
+</div>
+<html xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882"><head>
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:xd_Signature msdt:dt="string"></mso:xd_Signature>
+<mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Editor msdt:dt="string">Julian Nobrega</mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Editor>
+<mso:Order msdt:dt="string">1763500.00000000</mso:Order>
+<mso:xd_ProgID msdt:dt="string"></mso:xd_ProgID>
+<mso:_ExtendedDescription msdt:dt="string"></mso:_ExtendedDescription>
+<mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Author msdt:dt="string">Julian Nobrega</mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Author>
+<mso:ComplianceAssetId msdt:dt="string"></mso:ComplianceAssetId>
+<mso:TemplateUrl msdt:dt="string"></mso:TemplateUrl>
+<mso:TriggerFlowInfo msdt:dt="string"></mso:TriggerFlowInfo>
+<mso:ContentTypeId msdt:dt="string">0x01010092F49C521CA2C44189477687D0286BA9</mso:ContentTypeId>
+<mso:_SourceUrl msdt:dt="string"></mso:_SourceUrl>
+<mso:_SharedFileIndex msdt:dt="string"></mso:_SharedFileIndex>
+<mso:MediaLengthInSeconds msdt:dt="string"></mso:MediaLengthInSeconds>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+<title></title></head>

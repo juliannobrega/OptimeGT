@@ -1,0 +1,130 @@
+﻿@{
+    ViewData["Title"] = "Administración de Tablas de Licitación";
+}
+<script>
+    var componentes = ['nvd3', 'ui.ace'];
+</script>
+<div class="content-wrapper" style="min-height: 850px;" ng-controller="appController">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        @Html.Partial("~/Views/Shared/_PartialButtons.cshtml")
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </section>
+
+    <!-- BUSCAR content -->
+    <section class="content" ng-show="modo == MODO_BUSCAR">
+        <!-- BUSCAR -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel box box-primary">
+                    <div class="box-header with-border">
+                        <button class="btn btn-default pull-left" style="margin: -7px;" ng-click="onClickShowSearch()"> <i class="fa fa-search"></i> Búsqueda Avanzada</button>
+                        <button class="btn btn-primary pull-right" style="margin: -7px;" ng-click="onBuscar()" ng-if="!ShowAdvanceSearch"> <i class="fa fa-refresh"></i></button>
+                    </div>
+                    <div ng-if="ShowAdvanceSearch">
+                        <form class="form-horizontal">
+                            <div class="box-body">
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label">Nombre</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" ng-model="filterObject.Nombre" class="form-control" placeholder="Nombre">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label">Estado</label>
+                                    <div class="col-sm-10">
+                                        <select ng-model="filterObject.Estado" class="form-control">
+                                            <option value="T">Todos</option>
+                                            <option value="A">Activo</option>
+                                            <option value="D">Desactivado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6"></div>
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label"></label>
+                                    <div class="col-sm-10">
+                                        <button class="btn btn-primary pull-right" style="margin: 0px;" ng-click="onBuscar()"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRILLA -->
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table ng-table="tableBuscar" show-filter="false" class="table table-condensed table-bordered table-striped">
+                            <tr ng-repeat="row in $data">
+                                <td data-title="'Nombre'" sortable="'Nombre'">{{row.nombre}}</td>
+                                <td data-title="'Tabla'" sortable="'tablaMod'">{{row.tablaMod}}</td>
+                                <td data-title="'Estado'" sortable="'estado'">{{GetEstadoNombre(row.estado)}}</td>
+                                @Html.Partial("~/Views/Shared/_PartialTableButtons.cshtml")
+                            </tr>
+                            <tfoot ng-table-paging="tableBuscar"></tfoot>
+                        </table>
+                    </div>
+                    <!-- ./box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+
+    <!-- /.content -->
+    <!-- EDITAR content -->
+    <section class="content" ng-show="modo == MODO_EDITAR || modo == MODO_AGREGAR">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="box" ng-class="{'box-success':(modo == MODO_AGREGAR),'box-primary':(modo == MODO_EDITAR)}">
+                    <div class="box-header with-border">
+                        <h5 class="box-title" ng-show="modo == MODO_AGREGAR"> <i class="fa fa-plus-circle text-green"></i> Crear nuevo <span class="text-green">Tabla</span></h5>
+                        <h5 class="box-title" ng-show="modo == MODO_EDITAR"> <i class="fa fa-pencil text-blue"></i> Edición de la Tabla <span class="text-blue">{{selecteditem.nombre}}</span></h5>
+                    </div>
+                    <form class="form-horizontal">
+                        <div class="box-body">
+                            <div class="form-group {{errorClass('Nombre')}}">
+                                <label class="col-sm-2 control-label">Nombre</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.nombre" class="form-control" placeholder="Nombre" ng-change="errorRemove('Nombre')">
+                                    <span ng-show="hasError('Nombre')" class="help-block">{{errorMessage('Nombre')}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group {{errorClass('TablaMod')}}">
+                                <label class="col-sm-2 control-label">Tabla</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.tablaMod" class="form-control" placeholder="mod_ejemplo" ng-change="errorRemove('TablaMod')">
+                                    <span ng-show="hasError('TablaMod')" class="help-block">{{errorMessage('TablaMod')}}</span>
+                                </div>
+                            </div>
+                            <div class="form-group {{errorClass('Descripcion')}}">
+                                <label class="col-sm-2 control-label">Descripcion</label>
+                                <div class="col-sm-4">
+                                    <textarea type="text" ng-model="selecteditem.descripcion" class="form-control" placeholder="Descripcion" ng-change="errorRemove('Descripcion')"></textarea>
+                                    <span ng-show="hasError('Descripcion')" class="help-block">{{errorMessage('Descripcion')}}</span>
+                                </div>
+                            </div>
+                            <ng-tsc template="template" script="script" item="selecteditem" ng-if="show">
+                            </ng-tsc>
+
+                            @Html.Partial("~/Views/Shared/_PartialModificadoPor.cshtml")
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/js/controller/supuesto/supuestoController.js"></script>

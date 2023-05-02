@@ -1,0 +1,119 @@
+@{
+    ViewData["Title"] = "Administración de Grupos Empresarios";
+}
+
+@if (ViewData.Keys.Contains("done"))
+{
+    <script>
+        var done = '@ViewData["done"]';
+    </script>
+}
+<div class="content-wrapper" style="min-height: 850px;" ng-controller="appController">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        @Html.Partial("~/Views/Shared/_PartialButtons.cshtml")
+        <h1>
+            Administraci&oacute;n de Grupos Empresarios
+        </h1>
+    </section>
+
+    <!-- BUSCAR content -->
+    <section class="content" ng-show="modo == MODO_BUSCAR">
+        <!-- BUSCAR -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel box box-primary">
+                    <div class="box-header with-border">
+                        <button class="btn btn-default pull-left" style="margin: -7px;" ng-click="onClickShowSearch()"> <i class="fa fa-search"></i> B&uacute;squeda Avanzada</button>
+                        <button class="btn btn-primary pull-right" style="margin: -7px;" ng-click="onBuscar()" ng-if="!ShowAdvanceSearch"> <i class="fa fa-refresh"></i></button>
+                    </div>
+                    <div ng-if="ShowAdvanceSearch">
+                        <form class="form-horizontal">
+                            <div class="box-body">
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label">Nombre</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" ng-model="filterObject.Nombre" class="form-control" placeholder="Nombre">
+                                    </div>
+                                </div>
+                                                             
+                                <div class="form-group col-sm-6">
+                                    <label class="col-sm-2 control-label"></label>
+                                    <div class="col-sm-10">
+                                        <button class="btn btn-primary pull-right" style="margin: 0px;" ng-click="onBuscar()"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- GRILLA -->
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="box">
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table ng-table="tableBuscar" show-filter="false" class="table table-condensed table-bordered table-striped">
+                            <tr ng-repeat="row in $data">
+                                <td data-title="'Nombre'" sortable="'nombre'">{{row.nombre}}</td>                                           
+                                @Html.Partial("~/Views/Shared/_PartialTableButtons.cshtml")
+                            </tr>
+                            <tfoot ng-table-paging="tableBuscar"></tfoot>
+                        </table>
+                    </div>
+                    <!-- ./box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+    <!-- EDITAR content -->
+    <section class="content" ng-show="modo == MODO_EDITAR || modo == MODO_AGREGAR">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="box" ng-class="{'box-success':(modo == MODO_AGREGAR),'box-primary':(modo == MODO_EDITAR)}">
+                    <div class="box-header with-border">
+                        <h5 class="box-title" ng-show="modo == MODO_AGREGAR"> <i class="fa fa-plus-circle text-green"></i> Crear nuevo <span class="text-green">Grupo Empresario</span></h5>
+                        <h5 class="box-title" ng-show="modo == MODO_EDITAR"> <i class="fa fa-pencil text-blue"></i> Edici&oacute;n del Grupo Empresario <span class="text-blue">{{selecteditem.nombre}}</span></h5>
+                    </div>
+                    <form class="form-horizontal">
+                        <div class="box-body">
+                            <div class="form-group {{errorClass('Nombre')}}">
+                                <label class="col-sm-2 control-label">Nombre</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.nombre" class="form-control" placeholder="Nombre" ng-change="errorRemove('Nombre')">
+                                    <span ng-show="hasError('Nombre')" class="help-block">{{errorMessage('Nombre')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('Limite')}}">
+                                <label class="col-sm-2 control-label">L&iacute;mite de Escenarios</label>
+                                <div class="col-sm-4">
+                                    <input type="number" min="1" max="10" ng-model="selecteditem.limite" class="form-control" placeholder="5" ng-change="errorRemove('Limite')">
+                                    <span ng-show="hasError('Limite')" class="help-block">{{errorMessage('Limite')}}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group {{errorClass('Detalle')}}">
+                                <label class="col-sm-2 control-label">Detalle</label>
+                                <div class="col-sm-4">
+                                    <input type="text" ng-model="selecteditem.descripcion" class="form-control" placeholder="Detalle" ng-change="errorRemove('Descripcion')">
+                                    <span ng-show="hasError('Descripcion')" class="help-block">{{errorMessage('Descripcion')}}</span>
+                                </div>
+                            </div>
+
+                            @Html.Partial("~/Views/Shared/_PartialModificadoPor.cshtml")
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="~/js/controller/grupoEmpresario/grupoEmpresarioController.js"></script>

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--
+Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+-->
+<html xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<head>
+	<title></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script type="text/javascript">
+
+function gup( name )
+{
+	name = name.replace( /[\[]/, '\\\[' ).replace( /[\]]/, '\\\]' ) ;
+	var regexS = '[\\?&]' + name + '=([^&#]*)' ;
+	var regex = new RegExp( regexS ) ;
+	var results = regex.exec( window.location.href ) ;
+
+	if ( results )
+		return results[ 1 ] ;
+	else
+		return '' ;
+}
+
+var interval;
+
+function sendData2Master()
+{
+	var destination = window.parent.parent ;
+	try
+	{
+		if ( destination.XDTMaster )
+		{
+			var t = destination.XDTMaster.read( [ gup( 'cmd' ), gup( 'data' ) ] ) ;
+			window.clearInterval( interval ) ;
+		}
+	}
+	catch (e) {}
+}
+
+function OnMessage (event) {
+	        var message = event.data;
+	        var destination = window.parent.parent;
+	        destination.XDTMaster.read( [ 'end', message, 'fpm' ] ) ;
+}
+
+function listenPostMessage() {
+    if (window.addEventListener) { // all browsers except IE before version 9
+            window.addEventListener ("message", OnMessage, false);
+    }else {
+            if (window.attachEvent) { // IE before version 9
+                        window.attachEvent("onmessage", OnMessage);
+                }
+        }
+}
+
+function onLoad()
+{
+	interval = window.setInterval( sendData2Master, 100 );
+	listenPostMessage();
+}
+
+</script>
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:xd_Signature msdt:dt="string"></mso:xd_Signature>
+<mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Editor msdt:dt="string">Sergio Damonte</mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Editor>
+<mso:Order msdt:dt="string">493000.000000000</mso:Order>
+<mso:xd_ProgID msdt:dt="string"></mso:xd_ProgID>
+<mso:_ExtendedDescription msdt:dt="string"></mso:_ExtendedDescription>
+<mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Author msdt:dt="string">Sergio Damonte</mso:display_urn_x003a_schemas-microsoft-com_x003a_office_x003a_office_x0023_Author>
+<mso:ComplianceAssetId msdt:dt="string"></mso:ComplianceAssetId>
+<mso:TemplateUrl msdt:dt="string"></mso:TemplateUrl>
+<mso:ContentTypeId msdt:dt="string">0x01010092F49C521CA2C44189477687D0286BA9</mso:ContentTypeId>
+<mso:TriggerFlowInfo msdt:dt="string"></mso:TriggerFlowInfo>
+<mso:_SourceUrl msdt:dt="string"></mso:_SourceUrl>
+<mso:_SharedFileIndex msdt:dt="string"></mso:_SharedFileIndex>
+<mso:MediaLengthInSeconds msdt:dt="string"></mso:MediaLengthInSeconds>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+<body onload="onLoad()"><p></p></body>
+</html>

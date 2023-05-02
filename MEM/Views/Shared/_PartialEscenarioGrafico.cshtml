@@ -1,0 +1,77 @@
+﻿<div class="row">
+    <div ng-class="colapsar ? 'hidden' : 'col-md-4'">
+        <div class="panel box box-primary">
+            <!-- box-header principal -->
+            <div class="box-header with-border">
+                <h4 class="box-title">
+                    Filtros
+                </h4>               
+            </div>
+            <!-- box-body principal -->
+            <div class="box-body" style="height:100%!important">
+                <!-- box-filtros -->
+                <!-- Tipo de Gráfico -->
+                <div class="col-md-12">
+                    <div class="box">
+                        <!-- box-header -->
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Tipo de Gráfico</h3>                           
+                        </div>
+                        <!-- box-body -->
+                        <div class="box-body">
+                            <div class="btn-group-vertical" style="width: 100%;">
+                                <button type="button"
+                                        ng-class="showActive == item.id ? 'btn btn-success active': 'btn bg-olive'"
+                                        ng-repeat="item in tipos"
+                                        ng-click="onClickTipo(item.id)">
+                                    {{item.label}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico -->
+                <div class="col-md-12">
+                    
+                        <!-- box-body principal -->
+                        <div class="box-body" style="height:100%!important">
+                            <!-- box-body -->
+                            <div class="box-body">
+                                <button type="button"
+                                        ng-class="'btn btn-primary  col-md-12'"
+                                        ng-repeat="item in graficos"
+                                        ng-click="GetGrafico(item)"
+                                        style="margin: 5px;">
+                                    {{item.nombre}}
+                                </button>
+                            </div>
+                        </div>
+                   
+                </div>
+               
+            </div>
+        </div>
+    </div>
+
+    <div ng-class="colapsar ? 'col-md-12' : 'col-md-8'">
+        <div class="panel box box-primary">
+            <!-- box-header principal -->
+            <div class="box-header with-border">
+                <h4 class="box-title">
+                    Gráfico - <span class="text-blue">{{filterObject.selected.nombre}}</span>
+                </h4>
+            </div>
+
+            <!-- box-body -->
+            <div class="box-body" style="min-height: 400Px; padding:0px;">
+                <div style="min-height: 400px; padding:0px;">
+                    <div class="box-body" ng-if="filterObject.selected!=null">
+                        <ng-grafico template="filterObject.selected.template" script="filterObject.selected.scritp" schema="selecteditem.baseDatos" item="filterObject.selected" class="padding0 col-md-12"  ng-if="show">
+                        </ng-grafico>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
